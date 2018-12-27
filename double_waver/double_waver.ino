@@ -2,16 +2,12 @@
 #define CH1_PIN A0
 #define CH2_PIN A1
 
-#define ARRAY_SIZE 10
+#define ARRAY_SIZE 4096
 
 int current_element = 0;
-int channel_1[ARRAY_SIZE];
-int channel_2[ARRAY_SIZE];
 byte ch1 = CH1_PIN;
 byte ch2 = CH2_PIN;
-int timer_id;
 int m_symbol;
-int toggle1 = 0;
 
 
 void make_measurement() {
@@ -26,7 +22,7 @@ void make_measurement() {
   current_element++;
   if (current_element == ARRAY_SIZE) {
     disable_timer();
-    Serial.print(0x0D);
+    Serial.print("end");
     current_element = 0; 
   }
   digitalWrite(8, LOW);
@@ -60,43 +56,6 @@ void start_measurement() {
 }
 
 
-void sendInfo() {
-  char message[10] = {'c','o','n','t','a','c','t','y','e','s'};
-  for (int i = 0; i<10; i++) {
-    Serial.write(message[i]);
-  }
-  Serial.write(0x0D);
-}
-
-void send_Data() {
-  for (int i = 0; i<ARRAY_SIZE; i++) {
-    send_one_result(channel_1[i]);
-    Serial.write(0x7C);
-    send_one_result(channel_2[i]);
-    Serial.write(0x0D);
-  }
-
-  return;
-}
-
-void send_one_result(int result) {
-  char mask = 0x0F;
-  char byteToSend;
-  for (int j=0; j<2; j++) {
-    for (int i = 0; i<3; i++) {
-      byteToSend = (result>>((2-i)*4) & mask);
-      if (byteToSend>9) {
-        byteToSend = byteToSend + 0x37;
-      } else {
-        byteToSend = byteToSend + 0x30;
-      }
-      Serial.write(byteToSend);
-    }
-  }
-
-  return;
-}
-
 ISR(TIMER0_COMPA_vect){
   make_measurement();  
 }
@@ -114,7 +73,11 @@ void loop() {
     int byte_in = Serial.read();
     if (byte_in == 'm') {
       start_measurement();
-    } 
+    } else {
+      if (byte_in == 'i') {
+        Serial.print("contactyes");
+      }
+    }
   }
 } 
 
