@@ -51,16 +51,31 @@ def find_port(port_list):
         return 0
 
 
-def send_measurement_request():
-
-
+def write_com_data(port, data):
+    port.reset_input_buffer()
+    port.write(bytes(data, 'utf-8'))
     return
 
+def read_com_data(port, bytes_amount):
+    while port.in_waiting == 0:
+        pass
 
-def read_data():
-    data = 0
+    answer = port.read(bytes_amount)
+    answer_byte_list = answer.split(b'\r')
+    answer_str_list = [elem.decode('utf-8') for elem in answer_byte_list]
+    answer_str = ''.join(answer_str_list)
+    return answer_str
 
+def read_com_data_by_byte(work_port):
+    while work_port.in_waiting == 0:
+        pass
 
-    return data
+    answer = work_port.read(1)
+    while answer[-1] != 13:
+        while work_port.in_waiting == 0:
+            pass
+        answer += work_port.read(1)
+    return answer
+
 
 get_port()
