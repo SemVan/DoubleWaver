@@ -2,6 +2,46 @@ import serial
 import time
 
 
+def get_list_of_com_ports():
+    ports = ['COM%s' % (i + 1) for i in range(256)]
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
+
+
+def find_port(port_list):
+    work_port = serial.Serial()
+    work_port.baudrate = 115200
+    work_port.timeout = 10
+    work_port.write_timeout = 3
+    work_port.parity = serial.PARITY_NONE
+    work_port.bytesize = serial.EIGHTBITS
+    work_port.rtscts = True
+    for port in port_list:
+        print("Scanning port {ort}".format(ort=port))
+        work_port.port = port
+        work_port.close()
+        work_port.open()
+        try:
+            work_port.write(b'R\r')
+        except serial.SerialTimeoutException:
+            continue
+        photo_str = read_com_data(work_port, 3)
+
+        if photo_str[:2] == "OR":
+            print_green("Port found")
+            return work_port
+        else:
+            work_port.close
+    return 1
+
 
 def write_com_data(port, data):
     port.reset_input_buffer()
