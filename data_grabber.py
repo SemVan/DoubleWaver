@@ -1,5 +1,5 @@
 import serial
-import time
+
 
 
 def get_list_of_com_ports():
@@ -30,13 +30,13 @@ def find_port(port_list):
         work_port.close()
         work_port.open()
         try:
-            work_port.write(b'R\r')
+            work_port.write(b'i\r')
         except serial.SerialTimeoutException:
             continue
-        photo_str = read_com_data(work_port, 3)
+        answer = read_com_data(work_port, 10)
 
-        if photo_str[:2] == "OR":
-            print_green("Port found")
+        if answer == "contactyes":
+            print("Port found")
             return work_port
         else:
             work_port.close
@@ -76,28 +76,15 @@ def data_parser(data):
     ch1 = []
     ch2 = []
     for count in count_splt:
-        print(count)
         ch_split = count.split('/')
-        print(ch_split)
         ch1.append(float(ch_split[0]))
         ch2.append(float(ch_split[1]))
     return ch1, ch2
 
 
+def one_measurement_procedure(port):
+    port.write(b'm')
+    data = read_com_data_by_byte(port)
+    channel1, channel2 = data_parser(data)
+    return channel1, channel2
 
-
-work_port = serial.Serial('COM6')
-time.sleep(5)
-
-work_port.baudrate = 115200
-
-work_port.write(b'i')
-data = read_com_data(work_port, 10)
-if data == 'contactyes':
-    print("OK")
-
-work_port.write(b'm')
-data = read_com_data_by_byte(work_port)
-channel1, channel2 = data_parser(data)
-print(channel1)
-print(channel2)
