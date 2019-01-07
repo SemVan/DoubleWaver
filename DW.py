@@ -18,7 +18,8 @@ proc_end = False
 while not proc_end:
     fp = input("First point ")
     sp = input("Second point ")
-    fileName = folder_name + "/" + folder_name + "_" + fp + "_" + sp + ".txt"
+    np = input("Number of measurement ")
+    fileName = folder_name + "/" + folder_name + "_" + fp + "_" + sp + "_" + np + ".txt"
 
     sig1, sig2 = one_measurement_procedure(work_port)
     write_file(fileName, sig1, sig2)
