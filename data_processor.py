@@ -14,7 +14,7 @@ for folder_name in os.listdir(SIGNALS_PATH):
     for file_name in os.listdir(full_path):
         full_name = full_path + '/' + file_name
         print(full_name)
-        exp_name, p1, p2 = parse_file_name(file_name)
+        exp_name, p1, p2, num = parse_file_name(file_name)
         sig1, sig2 = read_file(full_name)
         sig1 = butter_bandpass_filter(sig1, 0.1, 5, 1000, 3)
         sig2 = butter_bandpass_filter(sig2, 0.1, 5, 1000, 3)
@@ -24,7 +24,11 @@ for folder_name in os.listdir(SIGNALS_PATH):
         # get_spectra(sig1)
         shift = get_phase_shift(sig1, sig2)
         print(shift)
-        plot_signals(sig1, sig2, 0)
-        experiment_data[p2] = shift
+        # plot_signals(sig1, sig2, 0)
+        if p2 in experiment_data:
+            experiment_data[p2][num] = shift
+        else:
+            experiment_data[p2] = dict()
+            experiment_data[p2][num] = shift
     report_file_name = exp_name+".csv"
     write_report(report_file_name, experiment_data)

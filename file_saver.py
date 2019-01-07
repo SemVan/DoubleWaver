@@ -28,5 +28,10 @@ def parse_file_name(file_name):
     name = file_splt[0]
     fp = file_splt[1]
     sp = file_splt[2]
+
+    if len(file_splt) == 4:
+        np = file_splt[3]
+    else:
+        np = 1
     print(name, fp, sp)
-    return name, fp, sp
+    return name, fp, sp, np

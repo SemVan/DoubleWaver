@@ -12,8 +12,9 @@ def write_report(file_name, data):
             keys.append(int(key))
         keys = sorted(keys)
         for key in keys:
-            row = [str(key), str(data[str(key)])]
-            writer.writerow(row)
+            for num in data[str(key)]:
+                row = [str(key), num, str(data[str(key)][num])]
+                writer.writerow(row)
     return
 
 
