@@ -5,7 +5,11 @@ from scipy.signal import butter, lfilter, lfilter_zi, welch
 
 DESCRETISATION_PERIOD = 0.001
 
-def plot_signals(ch1, ch2):
+def plot_signals(ch1, ch2, offset):
+    if offset>=0:
+        ch2 = ch2[int(offset):]
+    else:
+        ch1 = ch1[:int(offset)]
     plt.plot(range(len(ch1)), ch1, color='red')
     plt.plot(range(len(ch2)), ch2, color='green')
     plt.show()
@@ -13,7 +17,7 @@ def plot_signals(ch1, ch2):
 
 
 def get_phase_shift(sig1, sig2):
-    cross_corr = correlate(sig1, sig2, 'full', 'same')
+    cross_corr = correlate(sig1, sig2, 'full', 'direct')
     # plt.plot(range(len(cross_corr)), cross_corr)
     # plt.show()
     shift = np.argmax(cross_corr) - len(sig1)

@@ -15,9 +15,10 @@ def read_file(file_name):
         for row in f:
             row_str = row[:-1]
             row_splt = row_str.split('\t')
-            ch1.append(1024-float(row_splt[0]))
-            ch2.append(1024-float(row_splt[1]))
-    offset = int(abs(len(ch1)-8192)/2)
+            ch1.append(float(row_splt[0]))
+            ch2.append(float(row_splt[1]))
+    offset = int(abs(len(ch1)-3000)/2)
+    offset = 5
     return ch1[offset:-offset-1], ch2[offset:-offset-1]
 
 
