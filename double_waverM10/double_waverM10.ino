@@ -4,13 +4,13 @@
 #define TIMER_PRESCALER_DIV 1024
 
 #define CH1_PIN A0
-#define CH2_PIN A1
+#define CH2_PIN A5
 
-#define ARRAY_SIZE 3000
+#define ARRAY_SIZE 6000
 
 int current_element = 0;
-int channel_1[ARRAY_SIZE];
-int channel_2[ARRAY_SIZE];
+short channel_1[ARRAY_SIZE];
+short channel_2[ARRAY_SIZE];
 byte ch1 = CH1_PIN;
 byte ch2 = CH2_PIN;
 int timer_id;
@@ -24,7 +24,11 @@ bool isLEDOn = false;
 
 void make_measurement() {
   int m_1  = analogRead(ch1);
+//  m_1  = analogRead(ch1);
+//  m_1  = analogRead(ch1);
   int m_2  = analogRead(ch2);
+//  m_2  = analogRead(ch2);
+//  m_2  = analogRead(ch2);
 
   channel_1[current_element] = m_1;
   channel_2[current_element] = m_2;
@@ -58,7 +62,7 @@ void send_Data() {
     SerialUSB.print(channel_2[i]);
     SerialUSB.print('|');
   }
-  SerialUSB.print(0x0D);
+  SerialUSB.print("end");
   return;
 }
 
