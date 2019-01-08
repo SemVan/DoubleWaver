@@ -59,3 +59,44 @@ def get_spectra(signal):
     plt.ylim([0, 20])
     plt.show()
     return spectra, freqs
+
+
+def shift_matrix_procedure(mat):
+    mean_mat = np.median(mat, axis = 0)
+    print()
+    print(mean_mat)
+    show_surface_distribution(mean_mat)
+    row_mean = np.mean(mean_mat, axis = 0)
+    print(row_mean)
+    col_mean = np.mean(mean_mat, axis = 1)
+    print(col_mean)
+    plot_phase_distribution(row_mean, col_mean)
+    return
+
+def plot_phase_distribution(rows, cols):
+    plt.subplot(2,1,1)
+    plt.title("Horizontal")
+    plt.plot(range(len(rows)), rows)
+    plt.grid()
+
+    plt.subplot(2,1,2)
+    plt.title("Vertical")
+    plt.plot(range(len(cols)), cols)
+    plt.grid()
+    plt.show()
+
+
+def show_surface_distribution(mat):
+    plt.imshow(mat)
+    plt.show()
+
+def full_signals_procedure(ch1, ch2):
+
+    ch1 = butter_bandpass_filter(ch1, 0.1, 5, 1000, 3)
+    ch2 = butter_bandpass_filter(ch2, 0.1, 5, 1000, 3)
+    ch1 = norm_signal(ch1)
+    ch2 = norm_signal(ch2)
+    # get_spectra(sig1)
+    sh = get_phase_shift(ch1, ch2)
+    print(sh)
+    return ch1, ch2, sh
