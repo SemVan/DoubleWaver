@@ -61,16 +61,17 @@ def get_spectra(signal):
     return spectra, freqs
 
 
-def shift_matrix_procedure(mat):
+def shift_matrix_procedure(mat, st_shift):
     mean_mat = np.median(mat, axis = 0)
     print()
-    print(mean_mat)
-    show_surface_distribution(mean_mat)
-    row_mean = np.mean(mean_mat, axis = 0)
-    print(row_mean)
-    col_mean = np.mean(mean_mat, axis = 1)
-    print(col_mean)
-    plot_phase_distribution(row_mean, col_mean)
+    # print(mean_mat)
+    # show_surface_distribution(mean_mat)
+    row_mean = np.mean(mean_mat, axis = 0) - np.mean(st_shift)
+    # print(row_mean)
+    col_mean = np.mean(mean_mat, axis = 1) - np.mean(st_shift)
+
+    # print(col_mean)
+    # plot_phase_distribution(row_mean, col_mean)
     return
 
 def plot_phase_distribution(rows, cols):

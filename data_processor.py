@@ -16,7 +16,7 @@ for folder_name in os.listdir(SIGNALS_PATH):
     full_path = SIGNALS_PATH + '/' + folder_name
     experiment_data = dict()
     full_matrix = np.zeros(shape = (3, 8, 7))
-
+    inst_shift = []
     for file_name in os.listdir(full_path):
         full_name = full_path + '/' + file_name
         # print(full_name)
@@ -35,11 +35,13 @@ for folder_name in os.listdir(SIGNALS_PATH):
         col = p%7
         print(int(num), row, col)
 
-        if abs(shift)>=0.1:
+        if abs(shift)>=0.3:
             shift = 0
 
         if p>=0:
             full_matrix[int(num)-1, row, col] = shift
+        else:
+            inst_shift.append(shift)
 
         if p2 in experiment_data:
             experiment_data[p2][num] = shift
@@ -49,6 +51,11 @@ for folder_name in os.listdir(SIGNALS_PATH):
 
     print(full_matrix)
     print()
-    shift_matrix_procedure(full_matrix)
+
+    shift_matrix_procedure(full_matrix, inst_shift)
     report_file_name = exp_name+".csv"
+    write_matrices(report_file_name, full_matrix, inst_shift)
+    print()
+    new_mat, new_inst = read_matrices(report_file_name)
+    print(new_mat)
     write_report(report_file_name, experiment_data)
