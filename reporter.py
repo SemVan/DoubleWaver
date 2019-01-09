@@ -38,7 +38,8 @@ def read_matrices(file_name):
         reader = csv.reader(file, delimiter = ',')
 
         for row in reader:
-            full_data.append(row)
+            new_row = [float(x) for x in row]
+            full_data.append(new_row)
 
     device_shift = np.asarray(full_data[0])
     matrices = np.zeros(shape = (3, 8, 7))

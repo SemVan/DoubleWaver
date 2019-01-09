@@ -28,15 +28,13 @@ for folder_name in os.listdir(SIGNALS_PATH):
 
         p = int(p2)-1
 
-        # if (p>28):
-        #     p = p-7
+        if (p>28):
+            p = p-7
 
         row = p//7
         col = p%7
         print(int(num), row, col)
 
-        if abs(shift)>=0.3:
-            shift = 0
 
         if p>=0:
             full_matrix[int(num)-1, row, col] = shift
@@ -52,10 +50,6 @@ for folder_name in os.listdir(SIGNALS_PATH):
     print(full_matrix)
     print()
 
-    shift_matrix_procedure(full_matrix, inst_shift)
     report_file_name = exp_name+".csv"
     write_matrices(report_file_name, full_matrix, inst_shift)
-    print()
-    new_mat, new_inst = read_matrices(report_file_name)
-    print(new_mat)
     write_report(report_file_name, experiment_data)
