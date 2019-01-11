@@ -32,14 +32,14 @@ void make_measurement() {
 
   channel_1[current_element] = m_1;
   channel_2[current_element] = m_2;
+
   current_element++;
   if (current_element == ARRAY_SIZE) {
       NVIC_DisableIRQ(TC3_IRQn);
-      send_Data();
+      current_element = 0;
+      send_Data();  
   }
-  
 }
-
 
 void start_measurement() {
   current_element = 0;
@@ -97,6 +97,7 @@ void setTimerFrequency(int frequencyHz) {
   while (TC->STATUS.bit.SYNCBUSY == 1);
 }
 
+
 void startTimer(int frequencyHz) {
   REG_GCLK_CLKCTRL = (uint16_t) (GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_ID_TCC2_TC3) ;
   while ( GCLK->STATUS.bit.SYNCBUSY == 1 ); // wait for sync
@@ -130,15 +131,12 @@ void startTimer(int frequencyHz) {
   while (TC->STATUS.bit.SYNCBUSY == 1); // wait for sync
 }
 
+
 void TC3_Handler() {
   TcCount16* TC = (TcCount16*) TC3;
-  // If this interrupt is due to the compare register matching the timer count
-  // we toggle the LED.
+
   if (TC->INTFLAG.bit.MC0 == 1) {
     TC->INTFLAG.bit.MC0 = 1;
-    // Write callback here!!!
-//    digitalWrite(LED_PIN, isLEDOn);
-//    isLEDOn = !isLEDOn;
     make_measurement();
   }
 }
