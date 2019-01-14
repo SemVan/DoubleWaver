@@ -24,12 +24,12 @@ for folder_name in os.listdir(SIGNALS_PATH):
         exp_name, p1, p2, num = parse_file_name(file_name)
         sig1, sig2 = read_file(full_name)
         sig1, sig2, shift = full_signals_procedure(sig1, sig2)
-        # plot_signals(sig1, sig2, 0)
+        #plot_signals(sig1, sig2, 0)
 
         p = int(p2)-1
 
-        if (p>28):
-            p = p-7
+        # if (p>28):
+        #     p = p-7
 
         row = p//7
         col = p%7
@@ -49,7 +49,6 @@ for folder_name in os.listdir(SIGNALS_PATH):
 
     print(full_matrix)
     print()
-
     report_file_name = exp_name+".csv"
     write_matrices(report_file_name, full_matrix, inst_shift)
     write_report(report_file_name, experiment_data)

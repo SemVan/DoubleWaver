@@ -61,35 +61,41 @@ def get_spectra(signal):
     return spectra, freqs
 
 
-def shift_matrix_procedure(mat, st_shift):
+def shift_matrix_procedure(mat, st_shift, mat_name):
+    for part in mat:
+        part[abs(part)>0.1] = 0
+
+
     mean_mat = np.median(mat, axis = 0) - np.median(st_shift)
     mean_mat = get_shift_from_center(mean_mat)
-    print()
-    # print(mean_mat)
-    show_surface_distribution(mean_mat)
+    print(mean_mat)
+    # show_surface_distribution(mean_mat)
     row_mean = np.mean(mean_mat, axis = 0)
-    # print(row_mean)
     col_mean = np.mean(mean_mat, axis = 1)
+    r_diff = np.max(row_mean)-np.min(row_mean)
+    c_diff = np.max(col_mean)-np.min(col_mean)
 
-    # print(col_mean)
-    plot_phase_distribution(row_mean, col_mean)
-    return
+    # plot_phase_distribution(row_mean, col_mean, r_diff, c_diff, mat_name)
+    return col_mean, row_mean
 
 def get_shift_from_center(mat):
     new_mat = mat - mat[4][3]
     return new_mat
 
-def plot_phase_distribution(rows, cols):
+def plot_phase_distribution(rows, cols, row_diff, col_diff, fig_name):
+    f = plt.figure()
     plt.subplot(2,1,1)
-    plt.title("Horizontal")
+    plt.title("Horizontal   " + fig_name + "   " + str(row_diff))
     plt.plot(range(len(rows)), rows)
     plt.grid()
 
     plt.subplot(2,1,2)
-    plt.title("Vertical")
+    plt.title("Vertical   " + fig_name + "   " + str(col_diff))
     plt.plot(range(len(cols)), cols)
     plt.grid()
+    plt.tight_layout()
     plt.show()
+    return f
 
 
 def show_surface_distribution(mat):
