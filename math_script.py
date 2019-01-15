@@ -63,12 +63,12 @@ def get_spectra(signal):
 
 def shift_matrix_procedure(mat, st_shift, mat_name):
     for part in mat:
-        part[abs(part)>0.1] = 0
+        part[abs(part)>0.07] = 0
 
 
-    mean_mat = np.median(mat, axis = 0) - np.median(st_shift)
+    mean_mat = np.mean(mat, axis = 0) - np.mean(st_shift)
     mean_mat = get_shift_from_center(mean_mat)
-    print(mean_mat)
+
     # show_surface_distribution(mean_mat)
     row_mean = np.mean(mean_mat, axis = 0)
     col_mean = np.mean(mean_mat, axis = 1)

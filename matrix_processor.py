@@ -6,6 +6,8 @@ import matplotlib.backends.backend_pdf
 from matplotlib import pyplot as plt
 
 
+float_formatter = lambda x: "%.4f" % x
+np.set_printoptions(formatter={'float_kind':float_formatter})
 
 figures = []
 rows = []
@@ -28,28 +30,37 @@ for col in cols:
     new_col = col-np.mean(col)
     plt.plot(range(len(col)), new_col)
 
-
+print(rows)
+print()
 plt.subplot(2,1,2)
 for row in rows:
-    new_row = row-np.mean(row)
-    plt.plot(range(len(row)), new_row)
+    print(np.mean(row))
+    row = row-np.mean(row)
+    plt.plot(range(len(row)), row)
+
+
 
 plt.grid()
 plt.show()
 
-
+print()
+print(rows)
+print()
 m_r = np.mean(rows, axis=0)
-m_c = np.mean(cols, axis=1)
+m_c = np.mean(cols, axis=0)
 
 std_r = np.std(rows, axis=0)
-std_c = np.std(cols, axis=1)
+std_c = np.std(cols, axis=0)
 
-k = 3
-l_r = m_r + k*np.square(std_r)
-u_r = m_r - k*np.square(std_r)
+print(m_r)
+print(std_r)
 
-l_c = m_c + k*np.square(std_c)
-u_c = m_c - k*np.square(std_c)
+k = 1
+l_r = m_r + k*std_r
+u_r = m_r - k*std_r
+
+l_c = m_c + k*std_c
+u_c = m_c - k*std_c
 
 plt.subplot(2,1,1)
 plt.grid()
