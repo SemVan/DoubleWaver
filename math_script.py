@@ -1,7 +1,9 @@
 from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
 import numpy as np
 from scipy.signal import correlate
-from scipy.signal import butter, lfilter, lfilter_zi, welch
+from scipy.signal import butter, lfilter, lfilter_zi, welch, convolve2d
 
 DESCRETISATION_PERIOD = 0.001
 
@@ -69,14 +71,16 @@ def shift_matrix_procedure(mat, st_shift, mat_name):
     mean_mat = np.mean(mat, axis = 0) - np.mean(st_shift)
     mean_mat = get_shift_from_center(mean_mat)
 
-    # show_surface_distribution(mean_mat)
     row_mean = np.mean(mean_mat, axis = 0)
     col_mean = np.mean(mean_mat, axis = 1)
     r_diff = np.max(row_mean)-np.min(row_mean)
     c_diff = np.max(col_mean)-np.min(col_mean)
-
+    surface_mean = get_roi_means(mean_mat)
+    # show_surface_distribution(mean_mat)
+    # show_surface_distribution(surface_mean)
+    plt.show()
     # plot_phase_distribution(row_mean, col_mean, r_diff, c_diff, mat_name)
-    return col_mean, row_mean
+    return col_mean, row_mean, surface_mean
 
 def get_shift_from_center(mat):
     new_mat = mat - mat[4][3]
@@ -98,10 +102,33 @@ def plot_phase_distribution(rows, cols, row_diff, col_diff, fig_name):
     return f
 
 
+def distrib_procedure(slice):
+    m = np.mean(slice, axis=0)
+
+    std = np.std(slice, axis=0)
+
+    k = 1
+    l = m + k*std
+    u = m - k*std
+
+    return m, l, u
+
+
 def show_surface_distribution(mat):
-    plt.imshow(mat, cmap='Greys')
+    plt.figure()
+    plt.imshow(mat, cmap='plasma')
     plt.legend()
     plt.show()
+
+def get_roi_means(mat):
+    kernel = np.full(shape=(4,3), fill_value=1)
+    res = convolve2d(mat, kernel, mode='valid')
+    new_res = np.ndarray(shape=(2,2))
+    new_res[0][0] = res[0][0]
+    new_res[0][1] = res[0][-1]
+    new_res[1][0] = res[-1][0]
+    new_res[1][1] = res[-1][-1]
+    return new_res
 
 def full_signals_procedure(ch1, ch2):
 
