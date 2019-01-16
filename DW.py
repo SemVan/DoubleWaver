@@ -16,6 +16,7 @@ if not os.path.isdir(folder_name):
 
 proc_end = False
 while not proc_end:
+    print()
     fp = input("First point ")
     sp = input("Second point ")
     np = input("Number of measurement ")
