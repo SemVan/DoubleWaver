@@ -4,6 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from scipy.signal import correlate
 from scipy.signal import butter, lfilter, lfilter_zi, welch, convolve2d
+from scipy.stats import mannwhitneyu
 
 DESCRETISATION_PERIOD = 0.001
 
@@ -19,7 +20,7 @@ def plot_signals(ch1, ch2, offset):
 
 
 def get_phase_shift(sig1, sig2):
-    cross_corr = correlate(sig1, sig2, 'full', 'direct')
+    cross_corr = correlate(sig2, sig1, 'full', 'direct')
     # plt.plot(range(len(cross_corr)), cross_corr)
     # plt.show()
     shift = np.argmax(cross_corr) - len(sig1)
@@ -65,8 +66,9 @@ def get_spectra(signal):
 
 def shift_matrix_procedure(mat, st_shift, mat_name):
     for part in mat:
-        part[abs(part)>0.07] = 0
-
+        part[part>0.07] = 0.07
+    for part in mat:
+        part[part<-0.07] = -0.07
 
     mean_mat = np.mean(mat, axis = 0) - np.mean(st_shift)
     mean_mat = get_shift_from_center(mean_mat)
@@ -111,7 +113,7 @@ def distrib_procedure(slice):
     l = m + k*std
     u = m - k*std
 
-    return m, l, u
+    return m, l, u, std
 
 
 def show_surface_distribution(mat):
@@ -123,6 +125,7 @@ def show_surface_distribution(mat):
 def get_roi_means(mat):
     kernel = np.full(shape=(4,3), fill_value=1)
     res = convolve2d(mat, kernel, mode='valid')
+    res = res/12
     new_res = np.ndarray(shape=(2,2))
     new_res[0][0] = res[0][0]
     new_res[0][1] = res[0][-1]
@@ -140,3 +143,18 @@ def full_signals_procedure(ch1, ch2):
     sh = get_phase_shift(ch1, ch2)
     print(sh)
     return ch1, ch2, sh
+
+
+def get_mann_whitney_result(data):
+    level = 23
+    d_t = np.transpose(data)
+    sh = d_t.shape
+    u_test = np.zeros(shape = (sh[0], sh[0]))
+
+    for i in range(sh[0]):
+        for j in range(sh[0]):
+            res, p = mannwhitneyu(d_t[i], d_t[j])
+            u_test[i][j] = int(res<=level)
+    print(u_test)
+
+    return

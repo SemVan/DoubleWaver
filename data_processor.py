@@ -7,7 +7,7 @@ import numpy as np
 
 SIGNALS_PATH = "./Signals/Exper"
 
-float_formatter = lambda x: "%.4f" % x
+float_formatter = lambda x: "%.3f" % x
 np.set_printoptions(formatter={'float_kind':float_formatter})
 
 for folder_name in os.listdir(SIGNALS_PATH):

@@ -25,46 +25,76 @@ for file_name in os.listdir(MATRICES_PATH):
 
 rows = np.asarray(rows)
 cols = np.asarray(cols)
+new_rows = []
+new_cols = []
 
-
+plt.figure()
 plt.subplot(3,1,1)
 plt.grid()
+plt.ylim([-0.05, 0.05])
+plt.xlabel("Columm number")
+plt.ylabel("Delay, s")
+plt.title("a) Horizontal distribution")
 for col in cols:
-    new_col = col-np.mean(col)
-    plt.plot(range(len(col)), new_col)
+    col = col-np.mean(col)
+    new_cols.append(col)
+    plt.plot(range(len(col)), col)
 
 plt.subplot(3,1,2)
 plt.grid()
+plt.ylim([-0.05, 0.05])
+plt.xlabel("Row number")
+plt.ylabel("Delay, s")
+plt.title("b) Vertical distribution")
 for row in rows:
     row = row-np.mean(row)
+    new_rows.append(row)
     plt.plot(range(len(row)), row)
 
-plt.subplot(3,1,3)
+rows = np.asarray(new_rows)
+cols = np.asarray(new_cols)
+plt.show()
+#plt.subplot(3,1,3)
 # plt.grid()
 # for sect in sects:
 #     sect = sect-np.mean(row)
 #     plt.plot(range(len(sect)), sect)
 plt.imshow(np.mean(sects, axis=0))
 plt.colorbar()
+plt.tight_layout()
 plt.show()
 
 
-
-m_r, l_r, u_r = distrib_procedure(rows)
-m_c, l_c, u_c = distrib_procedure(cols)
+print("ROWS")
+print(rows)
+print("COLS")
+print(cols)
+print()
+m_r, l_r, u_r, std_r = distrib_procedure(rows)
+print('mann whitney rows')
+get_mann_whitney_result(rows)
+print('mann whitney cols')
+get_mann_whitney_result(cols)
+m_c, l_c, u_c, std_c = distrib_procedure(cols)
 # m_s, l_s, u_s = distrib_procedure(sects)
-
+k = 3
+plt.figure()
 plt.subplot(3,1,1)
 plt.grid()
-plt.plot(range(len(m_r)), m_r)
-plt.plot(range(len(m_r)), l_r, linestyle=':', color='red')
-plt.plot(range(len(m_r)), u_r, linestyle=':', color='red')
+plt.xlabel("Номер ряда")
+plt.ylabel("Задержка, с")
+plt.errorbar(range(len(m_r)), m_r, yerr=k*std_r)
+# plt.plot(range(len(m_r)), l_r, linestyle=':', color='red')
+# plt.plot(range(len(m_r)), u_r, linestyle=':', color='red')
 
 plt.subplot(3,1,2)
 plt.grid()
-plt.plot(range(len(m_c)), m_c)
-plt.plot(range(len(m_c)), l_c, linestyle=':', color='red')
-plt.plot(range(len(m_c)), u_c, linestyle=':', color='red')
+plt.xlabel("Номер строки")
+plt.ylabel("Задержка, с")
+plt.errorbar(range(len(m_c)), m_c, yerr=k*std_c)
+# plt.plot(range(len(m_c)), l_c, linestyle=':', color='red')
+# plt.plot(range(len(m_c)), u_c, linestyle=':', color='red')
+
 
 plt.subplot(3,1,3)
 plt.grid()
